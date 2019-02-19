@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Ebin-Benny/Trinity-Active-Backend/issues"
   },
-  "homepage": "https://github.com/Ebin-Benny/Trinity-Active-Backend#readme"
+  "homepage": "https://github.com/Ebin-Benny/Trinity-Active-Backend#readme",
+  "dependencies": {
+    "mongodb": "^3.1.13"
+  }
 }
