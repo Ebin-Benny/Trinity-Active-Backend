@@ -1,17 +1,18 @@
-export interface IUserRepos {
-  forks: ISizes;
-  size: ISizes;
-  stars: ISizes;
-  issues: ISizes;
-  user: string;
+export interface IUsers {
+  userid: string;
+  years: IYear[];
 }
 
-export interface ISizes {
-  children: IRepoStat[];
-  name: string;
+interface IYear {
+  year: string;
+  weeks: IWeek[];
 }
-interface IRepoStat {
-  name: string;
-  value: number;
-  language: string;
+interface IWeek {
+  week: string;
+  days: IDay[];
+}
+interface IDay {
+  day: string;
+  steps: number;
+  multiplier: number;
 }
