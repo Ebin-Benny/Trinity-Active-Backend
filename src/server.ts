@@ -1,10 +1,13 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
-import mongoose from 'mongoose';
+// import mongoose from 'mongoose';
 import logger from 'morgan';
+// import * as request from 'request'
 import { getUsers } from './database';
 
+const mongoose = require('mongoose');
+const User = require('./data');
 const API_PORT = 3001;
 const app = express();
 const router = express.Router();
@@ -29,4 +32,22 @@ app.use('/', router);
 
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
 
-getUsers();
+// getUsers();
+const yearArr: string[] = [];
+// yearArr.push('2019');
+const user = new User({
+  _id: new mongoose.Types.ObjectId(),
+  name: 'dave',
+  year: [
+    { week: [{ day: [{ day: '01-03', multiplier: '1', steps: '10000' }], week: '25-02' }], year: '2019' },
+    { year: '2018' },
+  ],
+});
+user
+  .save()
+  .then(result => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });

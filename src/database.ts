@@ -1,6 +1,6 @@
-import { User } from './data';
+const User = require('./data');
 export const getUsers = async () => {
   const data = new User();
-  data.userid = 'dh23ifda';
+  data.name = 'dh23ifda';
   await data.save();
 };
