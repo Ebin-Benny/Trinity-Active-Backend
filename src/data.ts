@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
   name: String,
+  totalSteps: Number,
   year: {
     index: false,
     type: [

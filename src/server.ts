@@ -1,10 +1,8 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
-// import mongoose from 'mongoose';
 import logger from 'morgan';
-// import * as request from 'request'
-import { getUsers } from './database';
+import { getUser, getUserSteps } from './database';
 
 const mongoose = require('mongoose');
 const User = require('./data');
@@ -32,22 +30,73 @@ app.use('/', router);
 
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
 
-// getUsers();
-const yearArr: string[] = [];
-// yearArr.push('2019');
-const user = new User({
-  _id: new mongoose.Types.ObjectId(),
-  name: 'dave',
-  year: [
-    { week: [{ day: [{ day: '01-03', multiplier: '1', steps: '10000' }], week: '25-02' }], year: '2019' },
-    { year: '2018' },
-  ],
+const d = new Date();
+
+const currentDate = d.getDate() + '-' + d.getMonth();
+console.log(currentDate);
+
+router.get('/getUser', cors(), (req, res) => {
+  const userName = req.query.name;
+  console.log(userName);
+  if (!userName) {
+    return res.json({
+      error: 'INVALID INPUTS\n',
+      success: false,
+    });
+  }
+  getUser(
+    userName,
+    data => {
+      return res.json({ data, success: true });
+    },
+    () => {
+      return res.json({
+        success: false,
+      });
+    },
+  );
 });
-user
-  .save()
-  .then(result => {
-    console.log(result);
-  })
-  .catch(err => {
-    console.log(err);
-  });
+
+router.get('/getUserSteps', cors(), (req, res) => {
+  const userStepsQuery = req.query.name;
+  const split = userStepsQuery.split('/');
+  const userName = split[0];
+  const date = split[1];
+  console.log(userName);
+  console.log(date);
+  if (!userStepsQuery || !userName || !date) {
+    return res.json({
+      error: 'INVALID INPUTS\n',
+      success: false,
+    });
+  }
+  getUserSteps(
+    userName,
+    currentDate,
+    data => {
+      return res.json({ data, success: true });
+    },
+    () => {
+      return res.json({
+        success: false,
+      });
+    },
+  );
+});
+
+// const user = new User({
+//   _id: new mongoose.Types.ObjectId(),
+//   name: 'John Ryan',
+//   totalSteps: '20000',
+//   year: [
+//     { week: [{ day: [{ day: currentDate, multiplier: '1', steps: '10000' }], week: '25-02' }], year: '2019' },
+//   ],
+// });
+// user
+//   .save()
+//   .then(result => {
+//     console.log(result);
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });

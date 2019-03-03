@@ -1,5 +1,6 @@
 export interface IUsers {
   userid: string;
+  totalSteps: number;
   years: IYear[];
 }
 
