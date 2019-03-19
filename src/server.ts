@@ -2,7 +2,8 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import logger from 'morgan';
-import { getUser, getUserSteps } from './database';
+import { resolve } from 'url';
+import { getUser, getUserSteps, updateUserSteps } from './database';
 
 const mongoose = require('mongoose');
 const User = require('./data');
@@ -30,14 +31,9 @@ app.use('/', router);
 
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
 
-const d = new Date();
-
-const currentDate = d.getDate() + '-' + d.getMonth();
-console.log(currentDate);
-
 router.get('/getUser', cors(), (req, res) => {
   const userName = req.query.name;
-  console.log(userName);
+  // console.log(req);
   if (!userName) {
     return res.json({
       error: 'INVALID INPUTS\n',
@@ -55,6 +51,7 @@ router.get('/getUser', cors(), (req, res) => {
       });
     },
   );
+  // console.log(res);
 });
 
 router.get('/getUserSteps', cors(), (req, res) => {
@@ -72,7 +69,7 @@ router.get('/getUserSteps', cors(), (req, res) => {
   }
   getUserSteps(
     userName,
-    currentDate,
+    getDay(),
     data => {
       return res.json({ data, success: true });
     },
@@ -84,19 +81,114 @@ router.get('/getUserSteps', cors(), (req, res) => {
   );
 });
 
-// const user = new User({
-//   _id: new mongoose.Types.ObjectId(),
-//   name: 'John Ryan',
-//   totalSteps: '20000',
-//   year: [
-//     { week: [{ day: [{ day: currentDate, multiplier: '1', steps: '10000' }], week: '25-02' }], year: '2019' },
-//   ],
+// var dayNum = d.getDay();
+// if(dayNum = 1{})
+
+router.post('/:userID', (req, res, next) => {
+  const id = req.params.userID;
+  const updateOps = {};
+  for (const ops of req.body) {
+    updateOps[ops.propName] = ops.value;
+  }
+  updateUserSteps(
+    id,
+    data => {
+      return res.json({ data, success: true });
+    },
+    () => {
+      return res.json({
+        success: false,
+      });
+    },
+  );
+});
+
+// db.collection.update(
+//   { _id : ObjectId("57315ba4846dd82425ca2408")},
+//   { $pull: {"myarray.userId": ObjectId("570ca5e48dbe673802c2d035")}}
+// )
+// db.collection.update(
+//   { _id : ObjectId("57315ba4846dd82425ca2408")},
+//   { $push: {"myarray": {
+//       userId:ObjectId("570ca5e48dbe673802c2d035"),
+//       point: 10
+//   }}
+// )
+
+// router.patch('/:productId', (req, res, next) => {
+//   const id = req.params.productId;
+//   const updateOps = {};
+//   for (const ops of req.body) {
+//     updateOps[ops.propName] = ops.value;
+//   }
+// updateUserSteps(
+//   id,
+//   data => {
+//     return res.json({ data, success: true });
+//   },
+//   () => {
+//     return res.json({
+//       success: false,
+//     });
+//   },
+// );
 // });
-// user
-//   .save()
-//   .then(result => {
-//     console.log(result);
-//   })
-//   .catch(err => {
-//     console.log(err);
-//   });
+
+router.patch('/:userId', (req, res, next) => {
+  const id = req.params.userId;
+  const updateOps = {};
+  for (const ops of req.body) {
+    updateOps[ops.propName] = ops.value;
+  }
+  User.update({ _id: id }, { $set: updateOps })
+    .exec()
+    .then(result => {
+      console.log(result);
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+});
+
+function getDay() {
+  const d = new Date();
+  const currentDate = d.getDate() + '-' + d.getMonth();
+  // console.log(currentDate);
+  return currentDate;
+}
+
+const user = new User({
+  _id: new mongoose.Types.ObjectId(),
+  name: 'Johnny Yurt',
+  totalSteps: '100000',
+  year: [
+    {
+      week: [
+        {
+          day: [{ day: '16-3', multiplier: '1', steps: '18000' }, { day: '17-3', multiplier: '1.5', steps: '15000' }],
+          week: '11-3',
+        },
+        {
+          day: [
+            { day: '18-3', multiplier: '1.75', steps: '13000' },
+            { day: getDay(), multiplier: '2', steps: '21000' },
+          ],
+          week: '18-3',
+        },
+      ],
+      year: '2019',
+    },
+  ],
+});
+user
+  .save()
+  .then(result => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
