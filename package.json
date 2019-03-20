@@ -28,6 +28,7 @@
     "compile": "tsc",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "prestart": "npm run compile && npm run lint",
+    "compine": "npm run compile && npm run lint",
     "tslint-check": "tslint-config-prettier-check ./tslint.json"
   },
   "author": "",
