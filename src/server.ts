@@ -3,10 +3,11 @@ import cors from 'cors';
 import express from 'express';
 import logger from 'morgan';
 import { resolve } from 'url';
-import { getUser, getUserSteps, updateUserSteps } from './database';
+import { getUser, getUserHomePage, getUserSteps, updateUserSteps } from './database';
 
 const mongoose = require('mongoose');
 const User = require('./data');
+const League = require('./data');
 const API_PORT = 3001;
 const app = express();
 const router = express.Router();
@@ -31,17 +32,40 @@ app.use('/', router);
 
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
 
-router.get('/getUser', cors(), (req, res) => {
-  const userName = req.query.name;
-  // console.log(req);
-  if (!userName) {
+router.get('/getUserHomepage/:id', cors(), (req, res) => {
+  const id = req.params.userID;
+  if (!id) {
     return res.json({
       error: 'INVALID INPUTS\n',
       success: false,
     });
   }
-  getUser(
-    userName,
+  getUserHomePage(
+    id,
+    data => {
+      return res.json({ data, success: true });
+    },
+    () => {
+      return res.json({
+        success: false,
+      });
+    },
+  );
+});
+
+router.get('/updateUser/:id', (req, res) => {
+  const id = req.params.id;
+  const userSteps = req.query.steps;
+  console.log(id + '  ' + userSteps);
+  if (!userSteps) {
+    return res.json({
+      error: 'INVALID INPUTS\n',
+      success: false,
+    });
+  }
+  updateUserSteps(
+    id,
+    userSteps,
     data => {
       return res.json({ data, success: true });
     },
@@ -81,39 +105,24 @@ router.get('/getUserSteps', cors(), (req, res) => {
   );
 });
 
-// var dayNum = d.getDay();
-// if(dayNum = 1{})
-
-router.post('/:userID', (req, res, next) => {
-  const id = req.params.userID;
-  const updateOps = {};
-  for (const ops of req.body) {
-    updateOps[ops.propName] = ops.value;
-  }
-  updateUserSteps(
-    id,
-    data => {
-      return res.json({ data, success: true });
-    },
-    () => {
-      return res.json({
-        success: false,
-      });
-    },
-  );
-});
-
-// db.collection.update(
-//   { _id : ObjectId("57315ba4846dd82425ca2408")},
-//   { $pull: {"myarray.userId": ObjectId("570ca5e48dbe673802c2d035")}}
-// )
-// db.collection.update(
-//   { _id : ObjectId("57315ba4846dd82425ca2408")},
-//   { $push: {"myarray": {
-//       userId:ObjectId("570ca5e48dbe673802c2d035"),
-//       point: 10
-//   }}
-// )
+// router.post('/:userID', (req, res, next) => {
+//   const id = req.params.userID;
+//   const updateOps = {};
+//   for (const ops of req.body) {
+//     updateOps[ops.propName] = ops.value;
+//   }
+//   updateUserSteps(
+//     id,
+//     data => {
+//       return res.json({ data, success: true });
+//     },
+//     () => {
+//       return res.json({
+//         success: false,
+//       });
+//     },
+//   );
+// });
 
 // router.patch('/:productId', (req, res, next) => {
 //   const id = req.params.productId;
@@ -156,35 +165,58 @@ router.patch('/:userId', (req, res, next) => {
 
 function getDay() {
   const d = new Date();
-  const currentDate = d.getDate() + '-' + d.getMonth();
+  const currentDate = d.getDate() + '-' + d.getMonth() + 1;
   // console.log(currentDate);
   return currentDate;
 }
 
-const user = new User({
-  _id: new mongoose.Types.ObjectId(),
-  name: 'Johnny Yurt',
-  totalSteps: '100000',
-  year: [
+// const user = new User({
+//   _id: new mongoose.Types.ObjectId(),
+//   name: 'Dave Yurt',
+//   totalSteps: '100000',
+//   year: [
+//     {
+//       week: [
+//         {
+//           day: [{ day: '16-3', goal: '20000', steps: '18000' }, { day: '17-3', goal: '20000',steps: '15000' }],
+//           week: '11-3',
+//         },
+//         {
+//           day: [
+//             { day: '18-3', goal: '20000', steps: '13000' }
+//            // { day: getDay(), multiplier: '2', steps: '21000' },
+//           ],
+//           week: '18-3',
+//         },
+//       ],
+//       year: '2019',
+//     },
+//   ],
+// });
+// user
+//   .save()
+//   .then(result => {
+//     console.log(result);
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });
+
+const league = new League({
+  // _id: new mongoose.Types.ObjectId(),
+  leagueName: 'Group 37',
+  members: [
     {
-      week: [
-        {
-          day: [{ day: '16-3', multiplier: '1', steps: '18000' }, { day: '17-3', multiplier: '1.5', steps: '15000' }],
-          week: '11-3',
-        },
-        {
-          day: [
-            { day: '18-3', multiplier: '1.75', steps: '13000' },
-            { day: getDay(), multiplier: '2', steps: '21000' },
-          ],
-          week: '18-3',
-        },
-      ],
-      year: '2019',
+      memberId: '5c922bb005ab5f61938c9135',
+      multiplier: '2',
+    },
+    {
+      memberId: '5c90f90d81c4aa258c62516d',
+      multiplier: '2.5',
     },
   ],
 });
-user
+league
   .save()
   .then(result => {
     console.log(result);

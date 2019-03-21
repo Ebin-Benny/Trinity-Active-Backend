@@ -14,6 +14,17 @@ interface IWeek {
 }
 interface IDay {
   day: string;
+  goal: string;
   steps: number;
-  multiplier: number;
+}
+
+export interface ILeague {
+  leagueId: string;
+  leagueName: string;
+  members: IMember;
+}
+
+interface IMember {
+  memberId: string;
+  multilier: string;
 }

@@ -12,7 +12,7 @@ const userSchema = mongoose.Schema({
             day: [
               {
                 day: String,
-                multiplier: Number,
+                goal: String,
                 steps: Number,
               },
             ],
@@ -23,6 +23,18 @@ const userSchema = mongoose.Schema({
       },
     ],
   },
+});
+
+module.exports = mongoose.model('User', userSchema);
+
+const leagueSchema = mongoose.Schema({
+  leagueName: String,
+  members: [
+    {
+      memberId: String,
+      multiplier: Number,
+    },
+  ],
 });
 
 module.exports = mongoose.model('User', userSchema);
