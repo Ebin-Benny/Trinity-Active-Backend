@@ -33,7 +33,8 @@ app.use('/', router);
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
 
 router.get('/getUserHomepage/:id', cors(), (req, res) => {
-  const id = req.params.userID;
+  const id = req.params.id;
+
   if (!id) {
     return res.json({
       error: 'INVALID INPUTS\n',
