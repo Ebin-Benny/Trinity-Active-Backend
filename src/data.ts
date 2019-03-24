@@ -12,14 +12,14 @@ const userSchema = mongoose.Schema({
             day: [
               {
                 day: String,
-                goal: String,
+                goal: Number,
                 steps: Number,
               },
             ],
             week: String,
           },
         ],
-        year: String,
+        year: Number,
       },
     ],
   },
