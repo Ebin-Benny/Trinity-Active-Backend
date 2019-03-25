@@ -1,6 +1,6 @@
 const User = require('./data');
 const League = require('./data');
-import { getDay } from './server';
+import { getDay, getWeek } from './server';
 interface History {
   day: string;
   goal: number;
@@ -29,7 +29,7 @@ export const getUser = async (userName: string, callback: any, error: any) => {
       data.year[yearSize - 1].week[weekSize - 1].day.push({
         day: getDay(),
         goal: data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].goal,
-        steps: '14300',
+        steps: '0`',
       });
     }
     data
@@ -48,7 +48,7 @@ export const getUser = async (userName: string, callback: any, error: any) => {
 };
 
 // takes userid and their steps and saves them to db
-// /updateUser/:id
+// /updateUser/:id/?steps=
 export const updateUserSteps = async (userId: string, currentSteps: string, callback: any, error: any) => {
   try {
     console.log(userId);
@@ -111,12 +111,12 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
       console.log('elseif');
     } else {
       console.log('No history available');
-      return;
+      callback(ret);
     }
     const hist: History[] = [];
     console.log(r++);
-    for (let i = weekSize - 1; i >= 0 && count < 6; i--) {
-      for (; j >= 0 && count < 6; j--) {
+    for (let i = weekSize - 1; i >= 0 && count < 5; i--) {
+      for (; j >= 0 && count < 5; j--) {
         console.log(r++);
         day = data.year[yearSize - 1].week[i].day[j].day;
         console.log(r++);
@@ -138,7 +138,7 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
       console.log(index.steps + ' ' + index.day);
     }
     console.log(ret);
-    callback(ret);
+    callback(hist);
   } catch (e) {
     error();
   }

@@ -176,7 +176,7 @@ export function getDay() {
   return currentDate;
 }
 
-function getWeek() {
+export function getWeek() {
   const d = new Date();
   let dayInNum = d.getDay() - 1;
   if (d.getDay() === 0) {
@@ -193,25 +193,22 @@ function getYear() {
   return year;
 }
 
-// const league = new League({
-//   // _id: new mongoose.Types.ObjectId(),
-//   leagueName: 'Group 37',
-//   members: [
-//     {
-//       memberId: '5c922bb005ab5f61938c9135',
-//       multiplier: '2',
-//     },
-//     {
-//       memberId: '5c90f90d81c4aa258c62516d',
-//       multiplier: '2.5',
-//     },
-//   ],
-// });
-// league
-//   .save()
-//   .then(result => {
-//     console.log(result);
-//   })
-//   .catch(err => {
-//     console.log(err);
-//   });
+const league = new League({
+  _id: new mongoose.Types.ObjectId(),
+  leagueName: 'Group 37',
+  members: [
+    {
+      memberId: '5c922bb005ab5f61938c9135',
+      multiplier: '2',
+      score: '3',
+    },
+  ],
+});
+league
+  .save()
+  .then(result => {
+    console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });

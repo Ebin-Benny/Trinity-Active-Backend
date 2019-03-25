@@ -33,8 +33,9 @@ const leagueSchema = mongoose.Schema({
     {
       memberId: String,
       multiplier: Number,
+      score: Number,
     },
   ],
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('League', leagueSchema);
