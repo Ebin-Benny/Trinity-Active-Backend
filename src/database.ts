@@ -60,10 +60,25 @@ export const updateUserSteps = async (userId: string, currentSteps: string, call
     const daySize = data.year[yearSize - 1].week[weekSize - 1].day.length;
 
     console.log(currentSteps);
-    if (data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].day === getDay()) {
-      data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].steps = currentSteps;
+    if (getWeek() === data.year[yearSize - 1].week[weekSize - 1].week) {
+      console.log('if1');
+      console.log(getWeek());
+      console.log(data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].day);
+      if (data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].day === getDay()) {
+        console.log('if12');
+        data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].steps = currentSteps;
+      } else {
+        console.log('else12');
+        data.year[yearSize - 1].week[weekSize - 1].day.push({
+          day: getDay(),
+          goal: data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].goal,
+          steps: currentSteps,
+        });
+      }
     } else {
-      data.year[yearSize - 1].week[weekSize - 1].day.push({
+      console.log('else1');
+      data.year[yearSize - 1].week.push({ week: getWeek() });
+      data.year[yearSize - 1].week[weekSize].day.push({
         day: getDay(),
         goal: data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].goal,
         steps: currentSteps,

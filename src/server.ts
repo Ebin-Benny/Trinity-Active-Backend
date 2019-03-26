@@ -13,7 +13,6 @@ import {
 
 const mongoose = require('mongoose');
 const User = require('./data');
-const League = require('./leaguedata');
 const API_PORT = 3001;
 const app = express();
 const router = express.Router();
@@ -73,34 +72,6 @@ router.get('/updateUser/:id', (req, res) => {
   updateUserSteps(
     id,
     userSteps,
-    data => {
-      return res.json({ data, success: true });
-    },
-    () => {
-      return res.json({
-        success: false,
-      });
-    },
-  );
-  // console.log(res);
-});
-
-router.get('/getUserSteps', cors(), (req, res) => {
-  const userStepsQuery = req.query.name;
-  const split = userStepsQuery.split('/');
-  const userName = split[0];
-  const date = split[1];
-  console.log(userName);
-  console.log(date);
-  if (!userStepsQuery || !userName || !date) {
-    return res.json({
-      error: 'INVALID INPUTS\n',
-      success: false,
-    });
-  }
-  getUserSteps(
-    userName,
-    getDay(),
     data => {
       return res.json({ data, success: true });
     },
@@ -175,45 +146,6 @@ router.patch('/addLeagueMember', cors(), (req, res) => {
   );
 });
 
-// router.patch('/:productId', (req, res, next) => {
-//   const id = req.params.productId;
-//   const updateOps = {};
-//   for (const ops of req.body) {
-//     updateOps[ops.propName] = ops.value;
-//   }
-// updateUserSteps(
-//   id,
-//   data => {
-//     return res.json({ data, success: true });
-//   },
-//   () => {
-//     return res.json({
-//       success: false,
-//     });
-//   },
-// );
-// });
-
-router.patch('/:userId', (req, res, next) => {
-  const id = req.params.userId;
-  const updateOps = {};
-  for (const ops of req.body) {
-    updateOps[ops.propName] = ops.value;
-  }
-  User.update({ _id: id }, { $set: updateOps })
-    .exec()
-    .then(result => {
-      console.log(result);
-      res.status(200).json(result);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err,
-      });
-    });
-});
-
 export function getDay() {
   const d = new Date();
   const currentDate = d.getDate() + '-' + (d.getMonth() + 1);
@@ -238,35 +170,12 @@ function getYear() {
   return year;
 }
 
-// const league = new League({
-//   _id: new mongoose.Types.ObjectId(),
-//   leagueId: '23xC38',
-//   leagueName: 'Group 27',
-//   members: [
-//     {
-//       memberId: '5c922bb005ab5f61938c9135',
-//       multiplier: '2',
-//       score: '3',
-//     },
-//   ],
-// });
-// league
-//   .save()
-//   .then(result => {
-//     console.log(result);
-//   })
-//   .catch(err => {
-//     console.log(err);
-//   });
-
 function makeId() {
   let text = '';
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
   for (let i = 0; i < 5; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
-
   return text;
 }
 
