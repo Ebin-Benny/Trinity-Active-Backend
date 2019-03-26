@@ -2,12 +2,18 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import logger from 'morgan';
-import { resolve } from 'url';
-import { createNewUser, getUserHomePage, getUserSteps, updateUserSteps } from './database';
+import {
+  addLeagueMember,
+  createNewLeague,
+  createNewUser,
+  getUserHomePage,
+  getUserSteps,
+  updateUserSteps,
+} from './database';
 
 const mongoose = require('mongoose');
 const User = require('./data');
-const League = require('./data');
+const League = require('./leaguedata');
 const API_PORT = 3001;
 const app = express();
 const router = express.Router();
@@ -130,6 +136,45 @@ router.post('/createNewUser', cors(), (req, res) => {
   );
 });
 
+router.post('/createNewLeague', cors(), (req, res) => {
+  console.log('yr');
+  const leagueName = req.query.name;
+  const memberId = req.query.memberId;
+  console.log('2');
+  createNewLeague(
+    makeId(),
+    leagueName,
+    memberId,
+    data => {
+      return res.json({ data, success: true });
+    },
+    () => {
+      return res.json({
+        success: false,
+      });
+    },
+  );
+});
+
+router.patch('/addLeagueMember', cors(), (req, res) => {
+  console.log('yr');
+  const leagueId = req.query.leagueId;
+  const memberId = req.query.memberId;
+  console.log('2');
+  addLeagueMember(
+    leagueId,
+    memberId,
+    data => {
+      return res.json({ data, success: true });
+    },
+    () => {
+      return res.json({
+        success: false,
+      });
+    },
+  );
+});
+
 // router.patch('/:productId', (req, res, next) => {
 //   const id = req.params.productId;
 //   const updateOps = {};
@@ -193,22 +238,36 @@ function getYear() {
   return year;
 }
 
-const league = new League({
-  _id: new mongoose.Types.ObjectId(),
-  leagueName: 'Group 37',
-  members: [
-    {
-      memberId: '5c922bb005ab5f61938c9135',
-      multiplier: '2',
-      score: '3',
-    },
-  ],
-});
-league
-  .save()
-  .then(result => {
-    console.log(result);
-  })
-  .catch(err => {
-    console.log(err);
-  });
+// const league = new League({
+//   _id: new mongoose.Types.ObjectId(),
+//   leagueId: '23xC38',
+//   leagueName: 'Group 27',
+//   members: [
+//     {
+//       memberId: '5c922bb005ab5f61938c9135',
+//       multiplier: '2',
+//       score: '3',
+//     },
+//   ],
+// });
+// league
+//   .save()
+//   .then(result => {
+//     console.log(result);
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });
+
+function makeId() {
+  let text = '';
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+  for (let i = 0; i < 5; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  return text;
+}
+
+console.log(makeId());

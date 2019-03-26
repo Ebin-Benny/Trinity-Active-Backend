@@ -1,5 +1,5 @@
 const User = require('./data');
-const League = require('./data');
+const League = require('./leaguedata');
 import { getDay, getWeek } from './server';
 interface History {
   day: string;
@@ -92,16 +92,20 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
     let r = 0;
     const ret = await User.findOne({ _id: userId });
     const data = new User(ret);
+    console.log(ret);
+
     console.log(r++);
     let day;
     let year;
     let steps;
     let goal;
+    console.log(data.year.length);
     const yearSize = data.year.length;
+    console.log(yearSize);
     const weekSize = data.year[yearSize - 1].week.length;
+    console.log(weekSize);
     const daySize = data.year[yearSize - 1].week[weekSize - 1].day.length;
     console.log(r++);
-    console.log(userId);
     let count = 0;
     let j;
     if (daySize >= 2) {
@@ -111,7 +115,7 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
       console.log('elseif');
     } else {
       console.log('No history available');
-      callback(ret);
+      return;
     }
     const hist: History[] = [];
     console.log(r++);
@@ -137,8 +141,8 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
     for (const index of hist) {
       console.log(index.steps + ' ' + index.day);
     }
-    console.log(ret);
-    callback(hist);
+    // callback(hist);
+    callback(ret);
   } catch (e) {
     error();
   }
@@ -180,11 +184,65 @@ export const createNewUser = async (
       .catch(err => {
         console.log(err);
       });
+    callback(user);
   } catch (e) {
     error();
   }
 };
 
+export const createNewLeague = async (
+  leagueID: string,
+  name: string,
+  leagueMember: string,
+  callback: any,
+  error: any,
+) => {
+  try {
+    console.log('3');
+    const league = new League({
+      // _id: new mongoose.Types.ObjectId(),
+      leagueId: leagueID,
+      leagueName: name,
+      members: [
+        {
+          memberId: leagueMember,
+          multiplier: '1',
+          score: '1',
+        },
+      ],
+    });
+    league
+      .save()
+      .then(result => {
+        console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    callback(league);
+  } catch (e) {
+    error();
+  }
+};
+
+export const addLeagueMember = async (leagueID: string, memberID: string, callback: any, error: any) => {
+  try {
+    const ret = await League.findOne({ leagueId: leagueID });
+    const league = new League(ret);
+    console.log(league.members.length);
+    console.log(leagueID);
+    console.log(memberID);
+    console.log(league.leagueName);
+    league.members.push({
+      memberId: memberID,
+      multiplier: '1',
+      score: '1',
+    });
+    callback(league);
+  } catch (e) {
+    error();
+  }
+};
 export const getUserSteps = async (userName: string, currentDate: string, callback: any, error: any) => {
   try {
     const ret = await User.findOne({ name: userName });
