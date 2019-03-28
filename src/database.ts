@@ -156,8 +156,8 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
     for (const index of hist) {
       console.log(index.steps + ' ' + index.day);
     }
-    // callback(hist);
-    callback(ret);
+    callback(hist);
+    // callback(ret);
   } catch (e) {
     error();
   }
@@ -253,6 +253,14 @@ export const addLeagueMember = async (leagueID: string, memberID: string, callba
       multiplier: '1',
       score: '1',
     });
+    league
+      .save()
+      .then(result => {
+        console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
+      });
     callback(league);
   } catch (e) {
     error();
