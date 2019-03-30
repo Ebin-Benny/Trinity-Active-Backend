@@ -46,6 +46,14 @@ export const getUser = async (userName: string, callback: any, error: any) => {
     error();
   }
 };
+export const getLeague = async (leagueID: string, callback: any, error: any) => {
+  try {
+    const ret = await League.findOne({ leagueId: leagueID });
+    callback(ret);
+  } catch (e) {
+    error();
+  }
+};
 
 // takes userid and their steps and saves them to db
 // /updateUser/:id/?steps=

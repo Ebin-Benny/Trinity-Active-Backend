@@ -6,6 +6,7 @@ import {
   addLeagueMember,
   createNewLeague,
   createNewUser,
+  getLeague,
   getUserHomePage,
   getUserSteps,
   updateUserSteps,
@@ -72,6 +73,28 @@ router.get('/updateUser/:id', (req, res) => {
   updateUserSteps(
     id,
     userSteps,
+    data => {
+      return res.json({ data, success: true });
+    },
+    () => {
+      return res.json({
+        success: false,
+      });
+    },
+  );
+});
+
+router.get('/getLeague/:id', (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  if (!id) {
+    return res.json({
+      error: 'INVALID INPUTS\n',
+      success: false,
+    });
+  }
+  getLeague(
+    id,
     data => {
       return res.json({ data, success: true });
     },
