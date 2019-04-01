@@ -57,10 +57,15 @@ export const getLeague = async (leagueID: string, callback: any, error: any) => 
 
 export const userLookup = async (userID: string, callback: any, error: any) => {
   try {
+    console.log(userID.length);
+    if (userID.length !== 24) {
+      console.log('not 24');
+      callback(0);
+    }
     const ret = await User.findOne({ _id: userID });
     console.log(ret);
     if (ret != null) {
-      callback();
+      callback(1);
     } else {
       callback(0);
     }
