@@ -10,6 +10,7 @@ import {
   getUserHomePage,
   getUserSteps,
   updateUserSteps,
+  userLookup,
 } from './database';
 
 const mongoose = require('mongoose');
@@ -73,6 +74,28 @@ router.get('/updateUser/:id', (req, res) => {
   updateUserSteps(
     id,
     userSteps,
+    data => {
+      return res.json({ data, success: true });
+    },
+    () => {
+      return res.json({
+        success: false,
+      });
+    },
+  );
+});
+
+router.get('/userLookup/:id', (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  if (!id) {
+    return res.json({
+      error: 'INVALID INPUTS\n',
+      success: false,
+    });
+  }
+  userLookup(
+    id,
     data => {
       return res.json({ data, success: true });
     },
