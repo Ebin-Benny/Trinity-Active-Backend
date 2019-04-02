@@ -28,7 +28,7 @@ export const getLeague = async (leagueID: string, callback: any, error: any) => 
 export const userLookup = async (userID: string, callback: any, error: any) => {
   try {
     console.log(userID.length);
-    if (userID.length !== 16) {
+    if (userID.length !== 18) {
       console.log('not 16');
       callback(0);
     }
@@ -125,6 +125,7 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
       console.log('elseif');
     } else {
       console.log('No history available');
+      callback('No history available');
       return;
     }
     const hist: History[] = [];
