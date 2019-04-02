@@ -120,14 +120,15 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
     let j;
     if (daySize >= 2) {
       j = daySize - 2;
-    } else if (weekSize >= 2) {
-      j = data.year[yearSize - 1].week[weekSize - 2].day.length;
-      console.log('elseif');
-    } else {
-      console.log('No history available');
-      callback('No history available');
-      return;
     }
+    // } else if (weekSize >= 2) {
+    //   j = data.year[yearSize - 1].week[weekSize - 2].day.length;
+    //   console.log('elseif');
+    // } else  {
+    //   console.log('No history available');
+    //   callback('No history available');
+    //   return;
+    // }
     const hist: History[] = [];
     console.log(r++);
     for (let i = weekSize - 1; i >= 0 && count < 5; i--) {
