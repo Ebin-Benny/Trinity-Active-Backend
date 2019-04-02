@@ -8,7 +8,6 @@ import {
   createNewUser,
   getLeague,
   getUserHomePage,
-  getUserSteps,
   updateUserSteps,
   userLookup,
 } from './database';
@@ -19,7 +18,7 @@ const API_PORT = 3001;
 const app = express();
 const router = express.Router();
 const dbRoute =
-  'mongodb://SWeng37:Abc1234567@cluster0-shard-00-00-4spo1.mongodb.net:27017,cluster0-shard-00-01-4spo1.mongodb.net:27017,cluster0-shard-00-02-4spo1.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true';
+  'mongodb://SWeng37:SWeng37@cluster0-shard-00-00-4spo1.mongodb.net:27017,cluster0-shard-00-01-4spo1.mongodb.net:27017,cluster0-shard-00-02-4spo1.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true';
 
 app.use(cors());
 
@@ -109,7 +108,6 @@ router.get('/userLookup/:id', (req, res) => {
 
 router.get('/getLeague/:id', (req, res) => {
   const id = req.params.id;
-  console.log(id);
   if (!id) {
     return res.json({
       error: 'INVALID INPUTS\n',
@@ -129,13 +127,15 @@ router.get('/getLeague/:id', (req, res) => {
   );
 });
 
-router.post('/createNewUser', cors(), (req, res) => {
+router.post('/createNewUser/:id', cors(), (req, res) => {
   console.log('1');
+  const fuserID = req.params.id;
   const userName = req.query.name;
   const goal = 10000;
   const stepCount = req.query.steps;
   console.log('2');
   createNewUser(
+    fuserID,
     userName,
     getYear(),
     getWeek(),
@@ -157,7 +157,6 @@ router.post('/createNewLeague', cors(), (req, res) => {
   console.log('yr');
   const leagueName = req.query.name;
   const memberId = req.query.memberId;
-  console.log('2');
   createNewLeague(
     makeId(),
     leagueName,
@@ -177,7 +176,6 @@ router.patch('/addLeagueMember', cors(), (req, res) => {
   console.log('yr');
   const leagueId = req.query.leagueId;
   const memberId = req.query.memberId;
-  console.log('2');
   addLeagueMember(
     leagueId,
     memberId,
@@ -224,5 +222,3 @@ function makeId() {
   }
   return text;
 }
-
-console.log(makeId());

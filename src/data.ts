@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
+  fuserid: String,
   name: String,
   totalSteps: Number,
   year: {

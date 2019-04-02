@@ -15,37 +15,7 @@ class History {
     this.year = year;
   }
 }
-export const getUser = async (userName: string, callback: any, error: any) => {
-  try {
-    const ret = await User.findOne({ name: userName });
-    const data = new User(ret);
-    const yearSize = data.year.length;
-    const weekSize = data.year[yearSize - 1].week.length;
-    const daySize = data.year[yearSize - 1].week[weekSize - 1].day.length;
-    // console.log(data.year[yearSize-1].week[weekSize-1].day[daySize-1].day);
-    if (data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].day === getDay()) {
-      console.log('yurt');
-    } else {
-      data.year[yearSize - 1].week[weekSize - 1].day.push({
-        day: getDay(),
-        goal: data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].goal,
-        steps: '0`',
-      });
-    }
-    data
-      .save()
-      .then(result => {
-        console.log(result);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    console.log(ret);
-    callback(ret);
-  } catch (e) {
-    error();
-  }
-};
+
 export const getLeague = async (leagueID: string, callback: any, error: any) => {
   try {
     const ret = await League.findOne({ leagueId: leagueID });
@@ -58,11 +28,11 @@ export const getLeague = async (leagueID: string, callback: any, error: any) => 
 export const userLookup = async (userID: string, callback: any, error: any) => {
   try {
     console.log(userID.length);
-    if (userID.length !== 24) {
-      console.log('not 24');
+    if (userID.length !== 16) {
+      console.log('not 16');
       callback(0);
     }
-    const ret = await User.findOne({ _id: userID });
+    const ret = await User.findOne({ fuserid: userID });
     console.log(ret);
     if (ret != null) {
       callback(1);
@@ -79,7 +49,7 @@ export const userLookup = async (userID: string, callback: any, error: any) => {
 export const updateUserSteps = async (userId: string, currentSteps: string, callback: any, error: any) => {
   try {
     console.log(userId);
-    const ret = await User.findOne({ _id: userId });
+    const ret = await User.findOne({ fuserid: userId });
     console.log(ret);
     const data = new User(ret);
     const yearSize = data.year.length;
@@ -132,7 +102,7 @@ export const updateUserSteps = async (userId: string, currentSteps: string, call
 export const getUserHomePage = async (userId: string, callback: any, error: any) => {
   try {
     let r = 0;
-    const ret = await User.findOne({ _id: userId });
+    const ret = await User.findOne({ fuserid: userId });
     const data = new User(ret);
     console.log(ret);
 
@@ -145,9 +115,7 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
     const yearSize = data.year.length;
     console.log(yearSize);
     const weekSize = data.year[yearSize - 1].week.length;
-    console.log(weekSize);
     const daySize = data.year[yearSize - 1].week[weekSize - 1].day.length;
-    console.log(r++);
     let count = 0;
     let j;
     if (daySize >= 2) {
@@ -191,6 +159,7 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
 };
 
 export const createNewUser = async (
+  fuserID: string,
   userName: string,
   fullYear: number,
   weekStart: string,
@@ -203,6 +172,7 @@ export const createNewUser = async (
   try {
     console.log('3');
     const user = new User({
+      fuserid: fuserID,
       name: userName,
       totalSteps: noSteps,
       year: [
@@ -289,15 +259,6 @@ export const addLeagueMember = async (leagueID: string, memberID: string, callba
         console.log(err);
       });
     callback(league);
-  } catch (e) {
-    error();
-  }
-};
-export const getUserSteps = async (userName: string, currentDate: string, callback: any, error: any) => {
-  try {
-    const ret = await User.findOne({ name: userName });
-    // console.log(ret);
-    callback(ret);
   } catch (e) {
     error();
   }
