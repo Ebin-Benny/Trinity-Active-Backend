@@ -265,3 +265,79 @@ export const addLeagueMember = async (leagueID: string, memberID: string, callba
     error();
   }
 };
+
+export const newDay = async (userId: string, currentSteps: string, callback: any, error: any) => {
+  try {
+    console.log(userId);
+    const ret = await User.findOne({ fuserid: userId });
+    console.log(ret);
+    const data = new User(ret);
+    const yearSize = data.year.length;
+    const weekSize = data.year[yearSize - 1].week.length;
+    const daySize = data.year[yearSize - 1].week[weekSize - 1].day.length;
+    const dateStr = data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].day;
+    let newDate;
+    let finalDate;
+    dateStr.split('');
+    console.log(dateStr[0]);
+    if (dateStr[1] === '-') {
+      newDate = dateStr[0];
+      console.log(newDate);
+
+      newDate++;
+      console.log(newDate);
+      if (dateStr[3] != null) {
+        finalDate = finalDate + dateStr[2] + dateStr[3];
+      } else {
+        console.log('else');
+        console.log(newDate + '-' + dateStr[2]);
+        finalDate = newDate + '-' + dateStr[2];
+        console.log(finalDate);
+      }
+      console.log(finalDate);
+    } else {
+      newDate = dateStr[0] + dateStr[1];
+      newDate++;
+      if (dateStr[3] != null) {
+        finalDate = finalDate + dateStr[2] + dateStr[3];
+      } else {
+        finalDate = finalDate + dateStr[2];
+      }
+      finalDate = newDate.join('');
+    }
+    console.log(finalDate);
+    if (getWeek() === data.year[yearSize - 1].week[weekSize - 1].week) {
+      console.log('if1');
+      console.log(getWeek());
+      console.log(data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].day);
+
+      console.log('else12');
+      data.year[yearSize - 1].week[weekSize - 1].day.push({
+        day: finalDate,
+        goal: data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].goal,
+        steps: currentSteps,
+      });
+    } else {
+      console.log('else1');
+      data.year[yearSize - 1].week.push({ week: getWeek() });
+      data.year[yearSize - 1].week[weekSize].day.push({
+        day: finalDate,
+        goal: data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].goal,
+        steps: currentSteps,
+      });
+    }
+
+    data
+      .save()
+      .then(result => {
+        console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    console.log(ret);
+    callback(ret);
+  } catch (e) {
+    error();
+  }
+};

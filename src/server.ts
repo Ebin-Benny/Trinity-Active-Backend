@@ -8,6 +8,7 @@ import {
   createNewUser,
   getLeague,
   getUserHomePage,
+  newDay,
   updateUserSteps,
   userLookup,
 } from './database';
@@ -71,6 +72,30 @@ router.get('/updateUser/:id', (req, res) => {
     });
   }
   updateUserSteps(
+    id,
+    userSteps,
+    data => {
+      return res.json({ data, success: true });
+    },
+    () => {
+      return res.json({
+        success: false,
+      });
+    },
+  );
+});
+
+router.get('/newDay/:id', (req, res) => {
+  const id = req.params.id;
+  const userSteps = req.query.steps;
+  console.log(id + '  ' + userSteps);
+  if (!userSteps) {
+    return res.json({
+      error: 'INVALID INPUTS\n',
+      success: false,
+    });
+  }
+  newDay(
     id,
     userSteps,
     data => {
