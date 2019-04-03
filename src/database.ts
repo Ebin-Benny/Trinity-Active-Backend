@@ -131,8 +131,8 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
     // }
     const hist: History[] = [];
     console.log(r++);
-    for (let i = weekSize - 1; i >= 0 && count < 5; i--) {
-      for (; j >= 0 && count < 5; j--) {
+    for (let i = weekSize - 1; i >= 0 && count < 30; i--) {
+      for (; j >= 0 && count < 30; j--) {
         console.log(r++);
         day = data.year[yearSize - 1].week[i].day[j].day;
         console.log(r++);
