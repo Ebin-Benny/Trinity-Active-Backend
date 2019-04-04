@@ -28,5 +28,6 @@ export interface ILeague {
 interface IMember {
   memberId: string;
   multiplier: string;
+  name: string;
   score: number;
 }

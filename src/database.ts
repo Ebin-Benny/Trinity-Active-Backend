@@ -208,6 +208,7 @@ export const createNewLeague = async (
   leagueID: string,
   name: string,
   leagueMember: string,
+  userName: string,
   callback: any,
   error: any,
 ) => {
@@ -221,6 +222,7 @@ export const createNewLeague = async (
         {
           memberId: leagueMember,
           multiplier: '1',
+          name: userName,
           score: '1',
         },
       ],
@@ -239,7 +241,13 @@ export const createNewLeague = async (
   }
 };
 
-export const addLeagueMember = async (leagueID: string, memberID: string, callback: any, error: any) => {
+export const addLeagueMember = async (
+  leagueID: string,
+  memberID: string,
+  userName: string,
+  callback: any,
+  error: any,
+) => {
   try {
     const ret = await League.findOne({ leagueId: leagueID });
     const league = new League(ret);
@@ -250,6 +258,7 @@ export const addLeagueMember = async (leagueID: string, memberID: string, callba
     league.members.push({
       memberId: memberID,
       multiplier: '1',
+      name: userName,
       score: '1',
     });
     league

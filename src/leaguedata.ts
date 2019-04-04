@@ -7,6 +7,7 @@ const leagueSchema = mongoose1.Schema({
     {
       memberId: String,
       multiplier: Number,
+      name: String,
       score: Number,
     },
   ],

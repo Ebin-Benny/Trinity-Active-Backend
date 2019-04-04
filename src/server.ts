@@ -182,10 +182,12 @@ router.post('/createNewLeague', cors(), (req, res) => {
   console.log('yr');
   const leagueName = req.query.name;
   const memberId = req.query.memberId;
+  const userName = req.query.userName;
   createNewLeague(
     makeId(),
     leagueName,
     memberId,
+    userName,
     data => {
       return res.json({ data, success: true });
     },
@@ -201,9 +203,11 @@ router.patch('/addLeagueMember', cors(), (req, res) => {
   console.log('yr');
   const leagueId = req.query.leagueId;
   const memberId = req.query.memberId;
+  const userName = req.query.userName;
   addLeagueMember(
     leagueId,
     memberId,
+    userName,
     data => {
       return res.json({ data, success: true });
     },
