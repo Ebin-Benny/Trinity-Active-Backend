@@ -16,6 +16,18 @@ class History {
   }
 }
 
+interface Homepage {
+  hist: History[];
+  league: string[];
+}
+// tslint:disable-next-line:max-classes-per-file
+class Homepage {
+  constructor(hist: History[], league: string[]) {
+    this.hist = hist;
+    this.league = league;
+  }
+}
+
 export const getLeague = async (leagueID: string, callback: any, error: any) => {
   try {
     const ret = await League.findOne({ leagueId: leagueID });
@@ -121,14 +133,6 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
     if (daySize >= 2) {
       j = daySize - 2;
     }
-    // } else if (weekSize >= 2) {
-    //   j = data.year[yearSize - 1].week[weekSize - 2].day.length;
-    //   console.log('elseif');
-    // } else  {
-    //   console.log('No history available');
-    //   callback('No history available');
-    //   return;
-    // }
     const hist: History[] = [];
     console.log(r++);
     for (let i = weekSize - 1; i >= 0 && count < 30; i--) {
@@ -142,19 +146,29 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
         console.log(r++);
         goal = data.year[yearSize - 1].week[i].day[j].goal;
         console.log(count);
+        console.log((day = data.year[yearSize - 1].week[i].day[j].day));
         const history1 = new History(day, goal, steps, year);
         hist.push(history1);
         count++;
       }
-      j = data.year[yearSize - 1].week[weekSize - 2].day.length - 1;
+      if (weekSize > 1) {
+        j = data.year[yearSize - 1].week[weekSize - 2].day.length - 1;
+      }
     }
     console.log(r++);
     console.log('yurt');
     for (const index of hist) {
       console.log(index.steps + ' ' + index.day);
     }
-    callback(hist);
-    // callback(ret);
+    console.log(userId);
+    const leagues = await League.find({ members: { $elemMatch: { memberId: userId } } });
+    const leagueArray = [];
+    for (const index of leagues) {
+      leagueArray.push(index.leagueId);
+    }
+    const userHomepage = new Homepage(hist, leagueArray);
+    console.log(leagues);
+    callback(userHomepage);
   } catch (e) {
     error();
   }
