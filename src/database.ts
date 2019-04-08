@@ -135,6 +135,23 @@ export const updateUserGoal = async (userId: string, goal: number, callback: any
   }
 };
 
+export const getUserGoal = async (userId: string, callback: any, error: any) => {
+  try {
+    const ret = await User.findOne({ fuserid: userId });
+    console.log(ret);
+    const data = new User(ret);
+    const yearSize = data.year.length;
+    const weekSize = data.year[yearSize - 1].week.length;
+    const daySize = data.year[yearSize - 1].week[weekSize - 1].day.length;
+
+    const goal = data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].goal;
+
+    callback(goal);
+  } catch (e) {
+    error();
+  }
+};
+
 // returns an array with the last five days history
 // /getUserHomepage/:id
 export const getUserHomePage = async (userId: string, callback: any, error: any) => {
