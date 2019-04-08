@@ -20,14 +20,16 @@ class History {
 interface Homepage {
   goal: number;
   hist: History[];
+  lifetimeSteps: number;
   league: string[];
 }
 // tslint:disable-next-line:max-classes-per-file
 class Homepage {
-  constructor(hist: History[], league: string[], goal: number) {
+  constructor(hist: History[], league: string[], goal: number, lifetimeSteps: number) {
     this.hist = hist;
     this.league = league;
     this.goal = goal;
+    this.lifetimeSteps = lifetimeSteps;
   }
 }
 
@@ -80,6 +82,7 @@ export const updateUserSteps = async (userId: string, currentSteps: string, call
         console.log('if12');
         data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].steps = currentSteps;
       } else {
+        data.totalSteps = data.totalSteps + data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].steps;
         console.log('else12');
         data.year[yearSize - 1].week[weekSize - 1].day.push({
           day: getDay(),
@@ -89,6 +92,7 @@ export const updateUserSteps = async (userId: string, currentSteps: string, call
       }
     } else {
       console.log('else1');
+      data.totalSteps = data.totalSteps + data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].steps;
       data.year[yearSize - 1].week.push({ week: getWeek() });
       data.year[yearSize - 1].week[weekSize].day.push({
         day: getDay(),
@@ -158,6 +162,7 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
     const weekSize = data.year[yearSize - 1].week.length;
     const daySize = data.year[yearSize - 1].week[weekSize - 1].day.length;
     const goalToRet = data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].goal;
+    const lifetimeSteps = data.totalSteps;
     let count = 0;
     let j;
     if (daySize >= 2) {
@@ -198,7 +203,7 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
     for (const index of leagues) {
       leagueArray.push(index.leagueId);
     }
-    const userHomepage = new Homepage(hist, leagueArray, goalToRet);
+    const userHomepage = new Homepage(hist, leagueArray, goalToRet, lifetimeSteps);
     // console.log(leagues);
     callback(userHomepage);
   } catch (e) {
