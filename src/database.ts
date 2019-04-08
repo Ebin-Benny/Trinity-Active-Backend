@@ -137,7 +137,7 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
     console.log(r++);
     for (let i = weekSize - 1; i >= 0 && count < 30; i--) {
       for (; j >= 0 && count < 30; j--) {
-        console.log(r++);
+        console.log(r++ + '  ' + i + '  ' + j);
         day = data.year[yearSize - 1].week[i].day[j].day;
         console.log(r++);
         year = data.year[yearSize - 1].year;
@@ -151,8 +151,10 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
         hist.push(history1);
         count++;
       }
-      if (weekSize > 1) {
-        j = data.year[yearSize - 1].week[weekSize - 2].day.length - 1;
+      if (i >= 1) {
+        console.log('if');
+        j = data.year[yearSize - 1].week[i - 1].day.length - 1;
+        console.log(j);
       }
     }
     console.log(r++);
@@ -167,7 +169,7 @@ export const getUserHomePage = async (userId: string, callback: any, error: any)
       leagueArray.push(index.leagueId);
     }
     const userHomepage = new Homepage(hist, leagueArray);
-    console.log(leagues);
+    // console.log(leagues);
     callback(userHomepage);
   } catch (e) {
     error();
