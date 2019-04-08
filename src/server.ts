@@ -7,7 +7,6 @@ import {
   createNewLeague,
   createNewUser,
   getLeague,
-  getUserGoal,
   getUserHomePage,
   newDay,
   updateUserGoal,
@@ -43,7 +42,6 @@ app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
 
 router.get('/getUserHomepage/:id', cors(), (req, res) => {
   const id = req.params.id;
-  getWeek();
   if (!id) {
     return res.json({
       error: 'INVALID INPUTS\n',
@@ -100,29 +98,6 @@ router.get('/updateUserGoal/:id', (req, res) => {
   updateUserGoal(
     id,
     goal,
-    data => {
-      return res.json({ data, success: true });
-    },
-    () => {
-      return res.json({
-        success: false,
-      });
-    },
-  );
-});
-
-router.get('/getUserGoal/:id', (req, res) => {
-  const id = req.params.id;
-
-  console.log(id);
-  if (!id) {
-    return res.json({
-      error: 'INVALID INPUTS\n',
-      success: false,
-    });
-  }
-  getUserGoal(
-    id,
     data => {
       return res.json({ data, success: true });
     },
