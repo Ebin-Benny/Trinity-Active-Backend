@@ -1,6 +1,7 @@
 const mongoose1 = require('mongoose');
 
 const leagueSchema = mongoose1.Schema({
+  goal: Number,
   leagueId: String,
   leagueName: String,
   members: [

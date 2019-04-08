@@ -9,6 +9,7 @@ import {
   getLeague,
   getUserHomePage,
   newDay,
+  updateUserGoal,
   updateUserSteps,
   userLookup,
 } from './database';
@@ -74,6 +75,30 @@ router.get('/updateUser/:id', (req, res) => {
   updateUserSteps(
     id,
     userSteps,
+    data => {
+      return res.json({ data, success: true });
+    },
+    () => {
+      return res.json({
+        success: false,
+      });
+    },
+  );
+});
+
+router.get('/updateUserGoal/:id', (req, res) => {
+  const id = req.params.id;
+  const goal = req.query.goal;
+  console.log(id + '  ' + goal);
+  if (!goal) {
+    return res.json({
+      error: 'INVALID INPUTS\n',
+      success: false,
+    });
+  }
+  updateUserGoal(
+    id,
+    goal,
     data => {
       return res.json({ data, success: true });
     },
@@ -183,11 +208,13 @@ router.post('/createNewLeague', cors(), (req, res) => {
   const leagueName = req.query.name;
   const memberId = req.query.memberId;
   const userName = req.query.userName;
+  const goal = req.query.goal;
   createNewLeague(
     makeId(),
     leagueName,
     memberId,
     userName,
+    goal,
     data => {
       return res.json({ data, success: true });
     },

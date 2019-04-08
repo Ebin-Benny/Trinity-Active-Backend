@@ -20,6 +20,7 @@ interface IDay {
 }
 
 export interface ILeague {
+  goal: number;
   leagueId: string;
   leagueName: string;
   members: IMember;

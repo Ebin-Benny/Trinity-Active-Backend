@@ -109,6 +109,32 @@ export const updateUserSteps = async (userId: string, currentSteps: string, call
   }
 };
 
+export const updateUserGoal = async (userId: string, goal: number, callback: any, error: any) => {
+  try {
+    console.log(goal);
+    const ret = await User.findOne({ fuserid: userId });
+    console.log(ret);
+    const data = new User(ret);
+    const yearSize = data.year.length;
+    const weekSize = data.year[yearSize - 1].week.length;
+    const daySize = data.year[yearSize - 1].week[weekSize - 1].day.length;
+
+    data.year[yearSize - 1].week[weekSize - 1].day[daySize - 1].goal = goal;
+    data
+      .save()
+      .then(result => {
+        console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    console.log(ret);
+    callback(ret);
+  } catch (e) {
+    error();
+  }
+};
+
 // returns an array with the last five days history
 // /getUserHomepage/:id
 export const getUserHomePage = async (userId: string, callback: any, error: any) => {
@@ -225,13 +251,14 @@ export const createNewLeague = async (
   name: string,
   leagueMember: string,
   userName: string,
+  leagueGoal: number,
   callback: any,
   error: any,
 ) => {
   try {
     console.log('3');
     const league = new League({
-      // _id: new mongoose.Types.ObjectId(),
+      goal: leagueGoal,
       leagueId: leagueID,
       leagueName: name,
       members: [
