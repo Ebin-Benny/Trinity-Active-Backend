@@ -268,25 +268,25 @@ router.patch('/updateUserScore/:id', cors(), (req, res) => {
 
 export function getDay() {
   const d = new Date();
-  const currentDate = d.getDate() + '-' + (d.getMonth() + 1);
+  const currentDate = d.getUTCDate() + '-' + (d.getUTCMonth() + 1);
   console.log(currentDate);
   return currentDate;
 }
 
 export function getWeek() {
   const d = new Date();
-  let dayInNum = d.getDay() - 1;
-  if (d.getDay() === 0) {
+  let dayInNum = d.getUTCDay() - 1;
+  if (d.getUTCDay() === 0) {
     dayInNum = 6;
   }
-  const week = d.getDate() - dayInNum + '-' + (d.getMonth() + 1);
+  const week = d.getUTCDate() - dayInNum + '-' + (d.getUTCMonth() + 1);
   console.log(week);
   return week;
 }
 
 function getYear() {
   const d = new Date();
-  const year = d.getFullYear();
+  const year = d.getUTCFullYear();
   return year;
 }
 
