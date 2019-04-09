@@ -142,7 +142,14 @@ export const updateUserGoal = async (userId: string, goal: number, callback: any
   }
 };
 
-export const updateScore = async (userId: string, leagueID: string, userScore: number, callback: any, error: any) => {
+export const updateScore = async (
+  userId: string,
+  leagueID: string,
+  userScore: number,
+  userMulti: number,
+  callback: any,
+  error: any,
+) => {
   try {
     // console.log(goal);
     const ret = await League.findOne({ leagueId: leagueID });
@@ -155,8 +162,10 @@ export const updateScore = async (userId: string, leagueID: string, userScore: n
         index = i;
       }
     }
-    league.members[index].score = userScore;
-
+    if (league.members[index].score < userScore) {
+      league.members[index].score = userScore;
+      league.members[index].multiplier = userMulti;
+    }
     league
       .save()
       .then(result => {
@@ -253,6 +262,12 @@ export const createNewUser = async (
   error: any,
 ) => {
   try {
+    const ret = await User.findOne({ fuserid: fuserID });
+    if (ret != null) {
+      callback(ret);
+      console.log('already in db');
+      return;
+    }
     console.log('3');
     const user = new User({
       fuserid: fuserID,
@@ -337,6 +352,16 @@ export const addLeagueMember = async (
     console.log(leagueID);
     console.log(memberID);
     console.log(league.leagueName);
+    let index;
+    for (let i = 0; i < league.members.length; i++) {
+      if (league.members[i].memberId === memberID) {
+        index = i;
+        console.log('yurt');
+        callback(league);
+        return;
+      }
+    }
+
     league.members.push({
       memberId: memberID,
       multiplier: '1',
