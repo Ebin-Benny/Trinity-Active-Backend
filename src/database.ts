@@ -142,6 +142,36 @@ export const updateUserGoal = async (userId: string, goal: number, callback: any
   }
 };
 
+export const updateScore = async (userId: string, leagueID: string, userScore: number, callback: any, error: any) => {
+  try {
+    // console.log(goal);
+    const ret = await League.findOne({ leagueId: leagueID });
+    console.log(ret);
+    const league = new League(ret);
+
+    let index;
+    for (let i = 0; i < league.members.length; i++) {
+      if (league.members[i].memberId === userId) {
+        index = i;
+      }
+    }
+    league.members[index].score = userScore;
+
+    league
+      .save()
+      .then(result => {
+        console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    console.log(ret);
+    callback(ret);
+  } catch (e) {
+    error();
+  }
+};
+
 // returns an array with the last five days history
 // /getUserHomepage/:id
 export const getUserHomePage = async (userId: string, callback: any, error: any) => {

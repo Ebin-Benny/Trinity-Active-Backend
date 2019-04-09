@@ -9,6 +9,7 @@ import {
   getLeague,
   getUserHomePage,
   newDay,
+  updateScore,
   updateUserGoal,
   updateUserSteps,
   userLookup,
@@ -234,6 +235,26 @@ router.patch('/addLeagueMember', cors(), (req, res) => {
     leagueId,
     memberId,
     userName,
+    data => {
+      return res.json({ data, success: true });
+    },
+    () => {
+      return res.json({
+        success: false,
+      });
+    },
+  );
+});
+
+router.patch('/updateUserScore/:id', cors(), (req, res) => {
+  console.log('yr');
+  const userId = req.params.id;
+  const leagueId = req.query.leagueId;
+  const score = req.query.score;
+  updateScore(
+    userId,
+    leagueId,
+    score,
     data => {
       return res.json({ data, success: true });
     },
