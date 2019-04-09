@@ -10,6 +10,7 @@ import {
   getUserHomePage,
   newDay,
   updateScore,
+  updateTodaysStepsBool,
   updateUserGoal,
   updateUserSteps,
   userLookup,
@@ -257,6 +258,26 @@ router.patch('/updateUserScore/:id', cors(), (req, res) => {
     leagueId,
     score,
     multiplier,
+    data => {
+      return res.json({ data, success: true });
+    },
+    () => {
+      return res.json({
+        success: false,
+      });
+    },
+  );
+});
+
+router.patch('/updateBool/:id', cors(), (req, res) => {
+  console.log('yr');
+  const userId = req.params.id;
+  const leagueId = req.query.leagueId;
+  const bool = req.query.bool;
+  updateTodaysStepsBool(
+    userId,
+    leagueId,
+    bool,
     data => {
       return res.json({ data, success: true });
     },

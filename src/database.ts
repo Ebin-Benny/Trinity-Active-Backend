@@ -181,6 +181,45 @@ export const updateScore = async (
   }
 };
 
+export const updateTodaysStepsBool = async (
+  userId: string,
+  leagueID: string,
+  updatedToday: boolean,
+  callback: any,
+  error: any,
+) => {
+  try {
+    // console.log(goal);
+    const ret = await League.findOne({ leagueId: leagueID });
+    console.log(ret);
+    const league = new League(ret);
+    console.log('1');
+    let index;
+    for (let i = 0; i < league.members.length; i++) {
+      console.log(i + 'nurt');
+      if (league.members[i].memberId === userId) {
+        console.log(i);
+        index = i;
+      }
+    }
+    console.log('no');
+    league.members[index].updatedToday = updatedToday;
+    console.log('yes');
+    league
+      .save()
+      .then(result => {
+        console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    console.log(ret);
+    callback(ret);
+  } catch (e) {
+    error();
+  }
+};
+
 // returns an array with the last five days history
 // /getUserHomepage/:id
 export const getUserHomePage = async (userId: string, callback: any, error: any) => {
@@ -321,6 +360,8 @@ export const createNewLeague = async (
           multiplier: '1',
           name: userName,
           score: '1',
+          stepsSinceReset: '0',
+          updatedToday: 'false',
         },
       ],
     });
@@ -367,6 +408,8 @@ export const addLeagueMember = async (
       multiplier: '1',
       name: userName,
       score: '1',
+      stepsSinceReset: '0',
+      updatedToday: 'false',
     });
     league
       .save()

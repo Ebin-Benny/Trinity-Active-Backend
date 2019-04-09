@@ -31,4 +31,5 @@ interface IMember {
   multiplier: string;
   name: string;
   score: number;
+  stepsSinceReset: number;
 }

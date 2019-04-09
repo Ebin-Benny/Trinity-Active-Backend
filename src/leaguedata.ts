@@ -10,6 +10,7 @@ const leagueSchema = mongoose1.Schema({
       multiplier: Number,
       name: String,
       score: Number,
+      updatedToday: Boolean,
     },
   ],
 });
