@@ -203,16 +203,24 @@ export const updateScore = async (userId: string, leagueID: string, callback: an
     }
     console.log('for 2');
     for (; weekIn <= user.year[yearSize - 1].week.length - 1; weekIn++) {
-      console.log('im here cunt');
       console.log(user.year[yearSize - 1].week[weekIn].day.length);
+      console.log('week ' + weekIn + '   day ' + dayIn);
       for (; dayIn <= user.year[yearSize - 1].week[weekIn].day.length - 1; dayIn++) {
         day = user.year[yearSize - 1].week[weekIn].day[dayIn].day;
         console.log(day);
         console.log('multi: ' + multiplier + '  steps: ' + user.year[yearSize - 1].week[weekIn].day[dayIn].steps);
-        score = score + multiplier * user.year[yearSize - 1].week[weekIn].day[dayIn].steps;
+        // score = score + multiplier * user.year[yearSize - 1].week[weekIn].day[dayIn].steps;
         console.log(score);
         if (user.year[yearSize - 1].week[weekIn].day[dayIn].steps >= goal) {
+          score = score + multiplier * goal;
           multiplier++;
+          score = score + (user.year[yearSize - 1].week[weekIn].day[dayIn].steps - goal) * multiplier;
+          console.log(score);
+        } else {
+          score = score + multiplier * user.year[yearSize - 1].week[weekIn].day[dayIn].steps;
+          console.log(score);
+          console.log(multiplier);
+          multiplier = 1;
         }
       }
       dayIn = 0;
