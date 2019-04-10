@@ -179,7 +179,7 @@ export const updateScore = async (userId: string, leagueID: string, callback: an
     let score = 0;
     let j;
     if (daySize >= 2) {
-      j = daySize - 2;
+      j = daySize - 1;
     }
     let dayIn;
     let weekIn;
@@ -201,6 +201,7 @@ export const updateScore = async (userId: string, leagueID: string, callback: an
         console.log(j);
       }
     }
+    console.log('week ' + weekIn + '   day ' + dayIn);
     console.log('for 2');
     for (; weekIn <= user.year[yearSize - 1].week.length - 1; weekIn++) {
       console.log(user.year[yearSize - 1].week[weekIn].day.length);
