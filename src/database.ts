@@ -17,6 +17,18 @@ class History {
   }
 }
 
+interface UserScore {
+  multiplier: number;
+  score: number;
+}
+
+// tslint:disable-next-line:max-classes-per-file
+class UserScore {
+  constructor(multiplier: number, score: number) {
+    this.multiplier = multiplier;
+    this.score = score;
+  }
+}
 interface Homepage {
   goal: number;
   hist: History[];
@@ -142,30 +154,75 @@ export const updateUserGoal = async (userId: string, goal: number, callback: any
   }
 };
 
-export const updateScore = async (
-  userId: string,
-  leagueID: string,
-  userScore: number,
-  userMulti: number,
-  callback: any,
-  error: any,
-) => {
+export const updateScore = async (userId: string, leagueID: string, callback: any, error: any) => {
   try {
     // console.log(goal);
+    const use = await User.findOne({ fuserid: userId });
     const ret = await League.findOne({ leagueId: leagueID });
     console.log(ret);
+    const user = new User(use);
     const league = new League(ret);
-
+    let dayJoined;
     let index;
-    for (let i = 0; i < league.members.length; i++) {
-      if (league.members[i].memberId === userId) {
-        index = i;
+    for (let l = 0; l < league.members.length; l++) {
+      if (league.members[l].memberId === userId) {
+        index = l;
+        dayJoined = league.members[l].dateJoined;
       }
     }
-    if (league.members[index].score < userScore) {
-      league.members[index].score = userScore;
-      league.members[index].multiplier = userMulti;
+    let day;
+    const yearSize = user.year.length;
+    const weekSize = user.year[yearSize - 1].week.length;
+    const daySize = user.year[yearSize - 1].week[weekSize - 1].day.length;
+    const goal = league.goal;
+    let multiplier = 1;
+    let score = 0;
+    let j;
+    if (daySize >= 2) {
+      j = daySize - 2;
     }
+    let dayIn;
+    let weekIn;
+    let i = weekSize - 1;
+    for (; i >= 0; i--) {
+      for (; j >= 0; j--) {
+        console.log(i + '  ' + j);
+        day = user.year[yearSize - 1].week[i].day[j].day;
+        if (dayJoined === day) {
+          console.log(';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;' + '  ' + day);
+          dayIn = j;
+          weekIn = i;
+          continue;
+        }
+      }
+      if (i >= 1) {
+        console.log('if');
+        j = user.year[yearSize - 1].week[i - 1].day.length - 1;
+        console.log(j);
+      }
+    }
+    console.log('for 2');
+    for (; weekIn <= user.year[yearSize - 1].week.length - 1; weekIn++) {
+      console.log('im here cunt');
+      console.log(user.year[yearSize - 1].week[weekIn].day.length);
+      for (; dayIn <= user.year[yearSize - 1].week[weekIn].day.length - 1; dayIn++) {
+        day = user.year[yearSize - 1].week[weekIn].day[dayIn].day;
+        console.log(day);
+        console.log('multi: ' + multiplier + '  steps: ' + user.year[yearSize - 1].week[weekIn].day[dayIn].steps);
+        score = score + multiplier * user.year[yearSize - 1].week[weekIn].day[dayIn].steps;
+        console.log(score);
+        if (user.year[yearSize - 1].week[weekIn].day[dayIn].steps >= goal) {
+          multiplier++;
+        }
+      }
+      dayIn = 0;
+      console.log('week ' + weekIn + '   day ' + dayIn);
+    }
+
+    console.log(score);
+    league.members[index].multiplier = multiplier;
+    league.members[index].score = score;
+    const userReturn = new UserScore(multiplier, score);
     league
       .save()
       .then(result => {
@@ -175,7 +232,7 @@ export const updateScore = async (
         console.log(err);
       });
     console.log(ret);
-    callback(ret);
+    callback(userReturn);
   } catch (e) {
     error();
   }
@@ -356,12 +413,11 @@ export const createNewLeague = async (
       leagueName: name,
       members: [
         {
+          dateJoined: getDay(),
           memberId: leagueMember,
           multiplier: '1',
           name: userName,
           score: '1',
-          stepsSinceReset: '0',
-          updatedToday: 'false',
         },
       ],
     });
@@ -404,12 +460,11 @@ export const addLeagueMember = async (
     }
 
     league.members.push({
+      dateJoined: getDay(),
       memberId: memberID,
       multiplier: '1',
       name: userName,
       score: '1',
-      stepsSinceReset: '0',
-      updatedToday: 'false',
     });
     league
       .save()

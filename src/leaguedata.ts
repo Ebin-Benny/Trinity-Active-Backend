@@ -6,11 +6,11 @@ const leagueSchema = mongoose1.Schema({
   leagueName: String,
   members: [
     {
+      dateJoined: String,
       memberId: String,
       multiplier: Number,
       name: String,
       score: Number,
-      updatedToday: Boolean,
     },
   ],
 });

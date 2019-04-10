@@ -27,9 +27,9 @@ export interface ILeague {
 }
 
 interface IMember {
+  dateJoined: string;
+  multiplier: number;
   memberId: string;
-  multiplier: string;
   name: string;
   score: number;
-  stepsSinceReset: number;
 }

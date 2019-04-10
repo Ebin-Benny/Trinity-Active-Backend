@@ -251,13 +251,9 @@ router.patch('/updateUserScore/:id', cors(), (req, res) => {
   console.log('yr');
   const userId = req.params.id;
   const leagueId = req.query.leagueId;
-  const score = req.query.score;
-  const multiplier = req.query.multi;
   updateScore(
     userId,
     leagueId,
-    score,
-    multiplier,
     data => {
       return res.json({ data, success: true });
     },
